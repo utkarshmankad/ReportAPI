@@ -8,8 +8,8 @@ export function useInView(): {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    // Guard for environments without IntersectionObserver (SSR, jsdom without mock)
+    if (typeof IntersectionObserver === "undefined") return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -21,7 +21,9 @@ export function useInView(): {
       { threshold: 0.1 }
     );
 
-    observer.observe(el);
+    const el = ref.current;
+    if (el) observer.observe(el);
+
     return () => observer.disconnect();
   }, []);
 

@@ -175,8 +175,8 @@ export function Hero() {
 
         {/* Code block preview */}
         <div className="mt-16 flex flex-col md:flex-row gap-4 w-full">
-          <CodePanel label="Request" code={requestCode} />
-          <CodePanel label="Response" code={responseCode} />
+          <CodePanel label="REQUEST" code={requestCode} />
+          <CodePanel label="RESPONSE" code={responseCode} />
         </div>
       </div>
     </section>
