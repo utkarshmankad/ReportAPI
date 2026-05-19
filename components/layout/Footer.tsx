@@ -1,0 +1,86 @@
+interface LinkGroup {
+  heading: string;
+  links: { label: string; href: string }[];
+}
+
+const linkGroups: LinkGroup[] = [
+  {
+    heading: "Product",
+    links: [
+      { label: "Features", href: "#" },
+      { label: "Pricing", href: "#" },
+      { label: "Docs", href: "#" },
+      { label: "Changelog", href: "#" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About", href: "#" },
+      { label: "Blog", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Contact", href: "#" },
+    ],
+  },
+  {
+    heading: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
+      { label: "DPDP Compliance", href: "#" },
+    ],
+  },
+];
+
+export function Footer() {
+  return (
+    <footer className="border-t border-[--color-border]">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        {/* Four-column grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+          {/* Brand column */}
+          <div className="col-span-2 md:col-span-1 flex flex-col gap-4">
+            <a href="/" className="flex items-center gap-2 w-fit">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-[--color-accent] shrink-0" />
+              <span className="font-semibold text-[--color-text-primary]">ReportAPI</span>
+            </a>
+            <p className="text-sm text-[--color-text-secondary]">
+              Raw data in. Board reports out.
+            </p>
+          </div>
+
+          {/* Link group columns */}
+          {linkGroups.map((group) => (
+            <div key={group.heading} className="flex flex-col gap-4">
+              <p className="text-xs uppercase tracking-widest text-[--color-text-secondary]">
+                {group.heading}
+              </p>
+              <ul className="flex flex-col gap-3">
+                {group.links.map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      className="text-sm text-[--color-text-secondary] hover:text-[--color-text-primary] transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom bar */}
+        <div className="border-t border-[--color-border] mt-12 pt-8 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-[--color-text-secondary]">
+            © 2026 ReportAPI. All rights reserved.
+          </p>
+          <p className="text-sm text-[--color-text-secondary]">
+            Built for India. Runs everywhere.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
