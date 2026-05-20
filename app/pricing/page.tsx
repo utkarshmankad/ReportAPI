@@ -4,76 +4,16 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-
-// ─── Data ────────────────────────────────────────────────────────────────────
-
-interface Plan {
-  name: string;
-  monthlyPrice: number;
-  description: string;
-  features: string[];
-  cta: string;
-  featured: boolean;
-}
-
-const plans: Plan[] = [
-  {
-    name: "Starter",
-    monthlyPrice: 149,
-    description: "Perfect for small teams exploring automated reporting.",
-    features: [
-      "50 reports/month",
-      "JSON→narrative",
-      "Email delivery",
-      "Standard templates",
-      "Community support",
-    ],
-    cta: "Get started",
-    featured: false,
-  },
-  {
-    name: "Growth",
-    monthlyPrice: 499,
-    description: "For growing teams that need scale and customisation.",
-    features: [
-      "500 reports/month",
-      "PDF + PPTX export",
-      "Scheduled delivery",
-      "Custom templates",
-      "Webhook callbacks",
-      "Email support",
-    ],
-    cta: "Get started",
-    featured: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: 1500,
-    description: "Unlimited scale, white-label output, and dedicated SLAs.",
-    features: [
-      "Unlimited reports",
-      "White-label output",
-      "Custom LLM prompt",
-      "Dedicated SLA",
-      "On-prem option",
-      "Dedicated support",
-    ],
-    cta: "Talk to us",
-    featured: false,
-  },
-];
-
-function resolvePrice(monthly: number, annual: boolean): number {
-  return annual ? Math.round(monthly * 0.8) : monthly;
-}
+import { plans, resolvePrice } from "@/lib/pricing-data";
 
 // ─── Comparison table ────────────────────────────────────────────────────────
 
-type CellValue = true | false | string;
+/** true = supported, false = not available, string = partial/future (e.g. "(v1.1)") */
+type CellSupport = true | false | string;
 
 interface ComparisonGroup {
   label: string;
-  rows: { feature: string; starter: CellValue; growth: CellValue; enterprise: CellValue }[];
+  rows: { feature: string; starter: CellSupport; growth: CellSupport; enterprise: CellSupport }[];
 }
 
 const comparisonGroups: ComparisonGroup[] = [
@@ -127,7 +67,7 @@ const comparisonGroups: ComparisonGroup[] = [
   },
 ];
 
-function Cell({ value }: { value: CellValue }) {
+function Cell({ value }: { value: CellSupport }) {
   if (value === true)
     return <span className="text-success font-medium">✓</span>;
   if (value === false)
@@ -274,6 +214,7 @@ export default function PricingPage() {
               <Button
                 variant={plan.featured ? "primary" : "ghost"}
                 size="md"
+                href="/contact"
                 className="w-full mt-auto justify-center"
               >
                 {plan.cta}
@@ -415,10 +356,10 @@ export default function PricingPage() {
           </div>
 
           <div className="flex flex-row md:flex-col gap-3 shrink-0">
-            <Button variant="primary" size="md">
+            <Button variant="primary" size="md" href="/contact">
               Talk to us
             </Button>
-            <Button variant="ghost" size="md">
+            <Button variant="ghost" size="md" href="/docs">
               View docs
             </Button>
           </div>

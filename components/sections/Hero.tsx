@@ -6,9 +6,9 @@ import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
 
 const avatars = [
-  { initials: "AK", bg: "bg-violet-700" },
-  { initials: "SR", bg: "bg-indigo-600" },
-  { initials: "PM", bg: "bg-blue-600" },
+  { initials: "AK", bg: "bg-avatar-a" },
+  { initials: "SR", bg: "bg-avatar-b" },
+  { initials: "PM", bg: "bg-avatar-c" },
 ];
 
 const requestCode = `POST /v1/report/generate HTTP/1.1
@@ -151,8 +151,8 @@ export function Hero() {
 
           {/* CTAs */}
           <div className="flex items-center gap-4 mt-2">
-            <Button variant="primary" size="lg">Start for free</Button>
-            <Button variant="ghost" size="lg">View docs</Button>
+            <Button variant="primary" size="lg" href="/contact">Start for free</Button>
+            <Button variant="ghost" size="lg" href="/docs">View docs</Button>
           </div>
 
           {/* Social proof */}

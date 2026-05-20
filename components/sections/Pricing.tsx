@@ -5,62 +5,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { useInView } from "@/hooks/useInView";
-
-interface Plan {
-  name: string;
-  monthlyPrice: number;
-  features: string[];
-  cta: string;
-  featured: boolean;
-}
-
-const plans: Plan[] = [
-  {
-    name: "Starter",
-    monthlyPrice: 149,
-    features: [
-      "50 reports/month",
-      "JSON→narrative",
-      "Email delivery",
-      "Standard templates",
-      "Community support",
-    ],
-    cta: "Get started",
-    featured: false,
-  },
-  {
-    name: "Growth",
-    monthlyPrice: 499,
-    features: [
-      "500 reports/month",
-      "PDF + PPTX export",
-      "Scheduled delivery",
-      "Custom templates",
-      "Webhook callbacks",
-      "Email support",
-    ],
-    cta: "Get started",
-    featured: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: 1500,
-    features: [
-      "Unlimited reports",
-      "White-label output",
-      "Custom LLM prompt",
-      "Dedicated SLA",
-      "On-prem option",
-      "Dedicated support",
-    ],
-    cta: "Talk to us",
-    featured: false,
-  },
-];
-
-function resolvePrice(monthly: number, annual: boolean): number {
-  return annual ? Math.round(monthly * 0.8) : monthly;
-}
+import { plans, resolvePrice } from "@/lib/pricing-data";
 
 export function Pricing() {
   const [annual, setAnnual] = useState(false);

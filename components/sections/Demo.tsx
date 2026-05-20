@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
+
+interface GenerateResponse {
+  narrative: string;
+  report_id?: string;
+  status?: string;
+  tokens_used?: number;
+}
 
 const trustBullets = [
   "No account required for the demo",
@@ -15,13 +22,25 @@ const trustBullets = [
 export function Demo() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
+  const [outputError, setOutputError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => abortRef.current?.abort();
+  }, []);
 
   async function handleGenerate() {
     if (!inputText.trim()) return;
 
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const timeoutId = setTimeout(() => controller.abort(), 15_000);
+
     setIsLoading(true);
     setOutputText("");
+    setOutputError("");
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -29,6 +48,7 @@ export function Demo() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: inputText }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -36,11 +56,14 @@ export function Demo() {
         throw new Error(err || `HTTP ${res.status}`);
       }
 
-      const json = await res.json();
-      setOutputText(json.narrative);
+      const json = await res.json() as GenerateResponse;
+      setOutputText(json.narrative ?? "");
     } catch (err) {
-      setOutputText("Error: " + (err instanceof Error ? err.message : String(err)));
+      if ((err as DOMException).name !== "AbortError") {
+        setOutputError(err instanceof Error ? err.message : String(err));
+      }
     } finally {
+      clearTimeout(timeoutId);
       setIsLoading(false);
     }
   }
@@ -103,6 +126,13 @@ export function Demo() {
               <div className="bg-surface border border-border rounded-[--radius-md] p-4">
                 <p className="text-accent text-xs font-mono tracking-widest uppercase mb-2">OUTPUT</p>
                 <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap">{outputText}</p>
+              </div>
+            )}
+
+            {outputError && (
+              <div className="bg-surface border border-error/20 rounded-[--radius-md] p-4">
+                <p className="text-error text-xs font-mono tracking-widest uppercase mb-2">ERROR</p>
+                <p className="text-sm text-error leading-relaxed">{outputError}</p>
               </div>
             )}
           </div>

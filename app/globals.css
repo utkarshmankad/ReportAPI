@@ -26,6 +26,11 @@
   --color-error:           #DC2626;
   --color-warning:         #D97706;
 
+  /* ── Avatar — three themed colours for social-proof stacks ── */
+  --color-avatar-a: #4F46E5;
+  --color-avatar-b: #7C3AED;
+  --color-avatar-c: #0369A1;
+
   /* ── Radius ── */
   --radius-sm:   6px;
   --radius-md:   10px;
@@ -61,6 +66,11 @@
   --color-success-subtle:  #052E16;
   --color-error:           #F87171;
   --color-warning:         #FCD34D;
+
+  /* ── Avatar ── */
+  --color-avatar-a: #6366F1;
+  --color-avatar-b: #8B5CF6;
+  --color-avatar-c: #0EA5E9;
 
   /* ── Shadow — stronger in dark to separate surfaces ── */
   --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.30);

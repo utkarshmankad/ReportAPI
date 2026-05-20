@@ -29,6 +29,9 @@ const config: Config = {
         "success-subtle": "var(--color-success-subtle)",
         error:            "var(--color-error)",
         warning:          "var(--color-warning)",
+        "avatar-a":       "var(--color-avatar-a)",
+        "avatar-b":       "var(--color-avatar-b)",
+        "avatar-c":       "var(--color-avatar-c)",
       },
       boxShadow: {
         sm: "var(--shadow-sm)",

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+
+export const metadata: Metadata = {
+  title: "Features — ReportAPI",
+  description:
+    "Every feature in ReportAPI: sub-4s generation, PII guard, templates, scheduling, PDF export, and full observability.",
+};
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -10,6 +17,7 @@ interface Section {
   description: string;
   bullets: string[];
   cta: string;
+  ctaHref: string;
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
@@ -26,6 +34,7 @@ const sections: Section[] = [
       "Returns narrative + tokens_used + report_id in a single response",
     ],
     cta: "Read API docs",
+    ctaHref: "/docs",
   },
   {
     category: "Templates",
@@ -38,6 +47,7 @@ const sections: Section[] = [
       "Scoped to your org — shared across all API keys",
     ],
     cta: "Explore templates",
+    ctaHref: "/docs#templates",
   },
   {
     category: "Scheduling",
@@ -50,6 +60,7 @@ const sections: Section[] = [
       "Empty result sets are skipped and logged — no blank reports sent",
     ],
     cta: "Schedule a report",
+    ctaHref: "/docs#scheduled-delivery",
   },
   {
     category: "Compliance",
@@ -62,6 +73,7 @@ const sections: Section[] = [
       "Audit log entry created on every block — zero raw data stored",
     ],
     cta: "Read security docs",
+    ctaHref: "/docs#pii-detection",
   },
   {
     category: "PDF Export",
@@ -74,6 +86,7 @@ const sections: Section[] = [
       "White-label mode available on Enterprise plan",
     ],
     cta: "See PDF samples",
+    ctaHref: "/docs#pdf-export",
   },
   {
     category: "Observability",
@@ -86,6 +99,7 @@ const sections: Section[] = [
       "OpenTelemetry traces exported to Grafana Cloud",
     ],
     cta: "View usage API",
+    ctaHref: "/docs",
   },
 ];
 
@@ -310,7 +324,7 @@ export default function FeaturesPage() {
                   ))}
                 </ul>
                 <div>
-                  <Button variant="ghost" size="sm">{section.cta}</Button>
+                  <Button variant="ghost" size="sm" href={section.ctaHref}>{section.cta}</Button>
                 </div>
               </div>
 
@@ -366,7 +380,7 @@ export default function FeaturesPage() {
           </h2>
           <p className="text-text-secondary">Start for free. No credit card required.</p>
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button variant="primary" size="lg">Get API key</Button>
+            <Button variant="primary" size="lg" href="/contact">Get API key</Button>
             {/*
               "View pricing" navigates to #pricing on the landing page.
               Using a styled <a> here preserves semantic link behaviour while

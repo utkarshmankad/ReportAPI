@@ -66,4 +66,16 @@ describe("<Button />", () => {
     render(<Button variant="ghost" size="md">Test</Button>);
     expect(screen.getByRole("button").className).toMatch(/bg-transparent/);
   });
+
+  it("renders as a link when href is provided", () => {
+    render(<Button variant="primary" size="md" href="/test">Go there</Button>);
+    const link = screen.getByRole("link", { name: /go there/i });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/test");
+  });
+
+  it("link variant applies same visual classes as button", () => {
+    render(<Button variant="primary" size="md" href="/test">Link</Button>);
+    expect(screen.getByRole("link").className).toMatch(/bg-accent/);
+  });
 });

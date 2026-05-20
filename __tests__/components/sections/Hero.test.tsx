@@ -16,14 +16,24 @@ describe("<Hero />", () => {
     expect(screen.getByText(/executive reports/i)).toBeInTheDocument();
   });
 
-  it("renders Start for free CTA", () => {
+  it("renders Start for free CTA as a link", () => {
     render(<Hero />);
-    expect(screen.getByRole("button", { name: /start for free/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /start for free/i })).toBeInTheDocument();
   });
 
-  it("renders View docs CTA", () => {
+  it("renders View docs CTA as a link", () => {
     render(<Hero />);
-    expect(screen.getByRole("button", { name: /view docs/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /view docs/i })).toBeInTheDocument();
+  });
+
+  it("Start for free links to /contact", () => {
+    render(<Hero />);
+    expect(screen.getByRole("link", { name: /start for free/i })).toHaveAttribute("href", "/contact");
+  });
+
+  it("View docs links to /docs", () => {
+    render(<Hero />);
+    expect(screen.getByRole("link", { name: /view docs/i })).toHaveAttribute("href", "/docs");
   });
 
   it("renders social proof text", () => {
@@ -54,5 +64,21 @@ describe("<Hero />", () => {
   it("renders POST verb in request code", () => {
     render(<Hero />);
     expect(screen.getByText("POST")).toBeInTheDocument();
+  });
+
+  it("renders with opacity-0 class when not in view", () => {
+    // React 18 strict mode double-mounts, so queue two noop observers.
+    // With observe never firing the callback, isInView stays false.
+    const noopObserver = () => ({
+      observe: jest.fn(),
+      disconnect: jest.fn(),
+      unobserve: jest.fn(),
+    });
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce(noopObserver);
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce(noopObserver);
+
+    render(<Hero />);
+    const section = screen.getByRole("heading", { level: 1 }).closest("section");
+    expect(section?.className).toMatch(/opacity-0/);
   });
 });

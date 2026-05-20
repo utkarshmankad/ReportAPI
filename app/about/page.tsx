@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+
+export const metadata: Metadata = {
+  title: "About — ReportAPI",
+  description:
+    "ReportAPI is built to eliminate manual reporting for India's fastest-growing companies. Learn about our mission, values, and the team behind the API.",
+};
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -145,8 +152,8 @@ export default function AboutPage() {
             and feedback from operators building in India.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
-            <Button variant="primary" size="lg">Get early access</Button>
-            <Button variant="ghost" size="lg">Read the docs</Button>
+            <Button variant="primary" size="lg" href="/contact">Get early access</Button>
+            <Button variant="ghost" size="lg" href="/docs">Read the docs</Button>
           </div>
         </div>
       </section>

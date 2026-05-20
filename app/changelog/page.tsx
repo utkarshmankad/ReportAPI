@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+
+export const metadata: Metadata = {
+  title: "Changelog — ReportAPI",
+  description:
+    "Every release, every fix, every improvement to ReportAPI — documented here.",
+};
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -158,7 +165,7 @@ export default function ChangelogPage() {
           <p className="text-lg font-semibold text-text-primary">
             Want a feature on the roadmap?
           </p>
-          <Button variant="primary" size="md">Submit feedback</Button>
+          <Button variant="primary" size="md" href="/contact">Submit feedback</Button>
         </div>
       </section>
     </main>

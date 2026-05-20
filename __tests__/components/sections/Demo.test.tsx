@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Demo } from "@/components/sections/Demo";
 
 describe("<Demo />", () => {
@@ -65,13 +65,14 @@ describe("<Demo />", () => {
 
     render(<Demo />);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "test data" } });
-
-    act(() => {
-      screen.getByRole("button", { name: /generate report/i }).click();
-    });
+    fireEvent.click(screen.getByRole("button", { name: /generate report/i }));
 
     expect(await screen.findByRole("button", { name: /generating/i })).toBeInTheDocument();
+
     resolve!({ ok: true, json: async () => ({ narrative: "done" }) });
+    await waitFor(() =>
+      expect(screen.queryByRole("button", { name: /generating/i })).not.toBeInTheDocument()
+    );
   });
 
   it("displays narrative after successful API call", async () => {
@@ -82,10 +83,7 @@ describe("<Demo />", () => {
 
     render(<Demo />);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "region,revenue\nNorth,100" } });
-
-    await act(async () => {
-      screen.getByRole("button", { name: /generate report/i }).click();
-    });
+    fireEvent.click(screen.getByRole("button", { name: /generate report/i }));
 
     await waitFor(() => {
       expect(screen.getByText("Strong Q2 performance.")).toBeInTheDocument();
@@ -100,13 +98,11 @@ describe("<Demo />", () => {
 
     render(<Demo />);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "some data" } });
-
-    await act(async () => {
-      screen.getByRole("button", { name: /generate report/i }).click();
-    });
+    fireEvent.click(screen.getByRole("button", { name: /generate report/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/error/i)).toBeInTheDocument();
+      expect(screen.getByText("ERROR")).toBeInTheDocument();
+      expect(screen.getByText(/service unavailable/i)).toBeInTheDocument();
     });
   });
 
@@ -123,13 +119,26 @@ describe("<Demo />", () => {
 
     render(<Demo />);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "test" } });
-
-    await act(async () => {
-      screen.getByRole("button", { name: /generate report/i }).click();
-    });
+    fireEvent.click(screen.getByRole("button", { name: /generate report/i }));
 
     await waitFor(() => {
       expect(screen.getByText("OUTPUT")).toBeInTheDocument();
     });
+  });
+
+  it("renders with opacity-0 class when not in view", () => {
+    // React 18 strict mode double-mounts, so queue two noop observers.
+    // With observe never firing the callback, isInView stays false.
+    const noopObserver = () => ({
+      observe: jest.fn(),
+      disconnect: jest.fn(),
+      unobserve: jest.fn(),
+    });
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce(noopObserver);
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce(noopObserver);
+
+    render(<Demo />);
+    const section = screen.getByRole("heading", { level: 2 }).closest("section");
+    expect(section?.className).toMatch(/opacity-0/);
   });
 });

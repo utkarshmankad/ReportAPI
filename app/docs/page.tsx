@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/Badge";
+import { InlineCode } from "@/components/ui/InlineCode";
+
+export const metadata: Metadata = {
+  title: "Documentation — ReportAPI",
+  description:
+    "ReportAPI developer documentation: authentication, your first report, error handling, and full API reference.",
+};
 
 // ─── Nav data ─────────────────────────────────────────────────────────────────
 
@@ -158,7 +166,7 @@ export default function DocsPage() {
             <input
               type="search"
               placeholder="Search docs..."
-              readOnly
+
               className="w-full bg-surface border border-border rounded-[--radius-md] px-4 py-3 pl-11 text-text-primary placeholder:text-text-tertiary outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-[border-color,box-shadow] duration-150"
             />
           </div>
@@ -230,22 +238,22 @@ export default function DocsPage() {
               </p>
               <p className="text-text-secondary leading-relaxed">
                 All endpoints live under{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   https://api.reportapi.io/v1
-                </code>
+                </InlineCode>
                 . Every response is JSON. Errors follow a consistent shape with a
                 top-level{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   error
-                </code>{" "}
+                </InlineCode>{" "}
                 object containing a machine-readable{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   code
-                </code>{" "}
+                </InlineCode>{" "}
                 and a human-readable{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   message
-                </code>
+                </InlineCode>
                 . The API is covered by our SOC 2 Type II audit on Growth and Enterprise
                 plans.
               </p>
@@ -261,9 +269,9 @@ export default function DocsPage() {
               </SectionHeading>
               <p className="text-text-secondary leading-relaxed">
                 All requests must include your API key in the{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   Authorization
-                </code>{" "}
+                </InlineCode>{" "}
                 header.
               </p>
               <CodeBlock>{`Authorization: Bearer YOUR_API_KEY`}</CodeBlock>
@@ -287,7 +295,7 @@ export default function DocsPage() {
                   "Send a POST request with your data.",
                   "Read the narrative from the response.",
                 ].map((step, i) => (
-                  <li key={i} className="flex items-start gap-3">
+                  <li key={step} className="flex items-start gap-3">
                     <span className="w-6 h-6 rounded-full bg-accent-subtle text-accent text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>
@@ -332,17 +340,17 @@ export default function DocsPage() {
               </SectionHeading>
               <p className="text-text-secondary leading-relaxed">
                 All errors return a JSON body with an{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   error
-                </code>{" "}
+                </InlineCode>{" "}
                 object. Use the{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   error.code
-                </code>{" "}
+                </InlineCode>{" "}
                 field for programmatic handling — the{" "}
-                <code className="bg-surface border border-border rounded px-1.5 py-0.5 font-mono text-sm text-text-primary">
+                <InlineCode>
                   message
-                </code>{" "}
+                </InlineCode>{" "}
                 field may change between releases.
               </p>
 

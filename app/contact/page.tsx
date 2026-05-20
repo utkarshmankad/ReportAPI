@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-type ContactType = "enterprise" | "partner" | "bug" | "partnership" | "";
+type ContactType = "enterprise" | "partner" | "bug" | "partnership";
 
 const contactTypes = [
   {
@@ -71,7 +71,7 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [selectedType, setSelectedType] = useState<ContactType>("");
+  const [selectedType, setSelectedType] = useState<ContactType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -95,6 +95,10 @@ export default function ContactPage() {
       setError("Please fill in your name, email, and message.");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     setIsSubmitting(true);
     submitTimerRef.current = setTimeout(() => {
       setIsSubmitting(false);
@@ -107,7 +111,7 @@ export default function ContactPage() {
     setEmail("");
     setSubject("");
     setMessage("");
-    setSelectedType("");
+    setSelectedType(null);
     setIsSubmitting(false);
     setIsSubmitted(false);
     setError("");
@@ -144,10 +148,10 @@ export default function ContactPage() {
                 <p className="text-text-primary font-semibold">Utkarsh Mankad</p>
                 <p className="text-text-secondary text-sm">Founder</p>
                 <a
-                  href="mailto:utkarsh.mankad@gmail.com"
+                  href="mailto:hello@reportapi.io"
                   className="text-accent text-sm hover:text-accent-hover hover:underline transition-colors mt-1"
                 >
-                  utkarsh.mankad@gmail.com
+                  hello@reportapi.io
                 </a>
               </div>
             </div>
@@ -212,7 +216,7 @@ export default function ContactPage() {
                       key={type.id}
                       type="button"
                       onClick={() =>
-                        setSelectedType(selectedType === type.id ? "" : type.id)
+                        setSelectedType(selectedType === type.id ? null : type.id)
                       }
                       className={cn(
                         "w-full text-left border rounded-[--radius-lg] p-4 flex gap-3 items-start transition-colors duration-150",
