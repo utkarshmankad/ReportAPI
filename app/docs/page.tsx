@@ -217,7 +217,7 @@ export default function DocsPage() {
           {/* Main content */}
           <div className="flex-1 min-w-0 flex flex-col gap-14">
             {/* Introduction */}
-            <article id="introduction" className="flex flex-col gap-4">
+            <article className="flex flex-col gap-4">
               <SectionHeading id="introduction" level={2}>
                 Introduction
               </SectionHeading>
@@ -252,7 +252,7 @@ export default function DocsPage() {
             </article>
 
             {/* Authentication */}
-            <article id="authentication" className="flex flex-col gap-4">
+            <article className="flex flex-col gap-4">
               <SectionHeading id="authentication" level={2}>
                 Authentication
               </SectionHeading>
@@ -276,7 +276,7 @@ export default function DocsPage() {
             </article>
 
             {/* Your first report */}
-            <article id="your-first-report" className="flex flex-col gap-5">
+            <article className="flex flex-col gap-5">
               <SectionHeading id="your-first-report" level={2}>
                 Your first report
               </SectionHeading>
@@ -326,7 +326,7 @@ export default function DocsPage() {
             </article>
 
             {/* Error Handling */}
-            <article id="error-handling" className="flex flex-col gap-4">
+            <article className="flex flex-col gap-4">
               <SectionHeading id="error-handling" level={2}>
                 Error Handling
               </SectionHeading>

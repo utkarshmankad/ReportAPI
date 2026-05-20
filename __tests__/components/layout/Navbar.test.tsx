@@ -28,7 +28,22 @@ describe("<Navbar />", () => {
 
   it("renders Docs nav link", () => {
     render(<Navbar />);
-    expect(screen.getByRole("link", { name: /docs/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^docs$/i })).toBeInTheDocument();
+  });
+
+  it("renders Changelog nav link", () => {
+    render(<Navbar />);
+    expect(screen.getByRole("link", { name: /changelog/i })).toBeInTheDocument();
+  });
+
+  it("renders About nav link", () => {
+    render(<Navbar />);
+    expect(screen.getByRole("link", { name: /about/i })).toBeInTheDocument();
+  });
+
+  it("renders Contact nav link", () => {
+    render(<Navbar />);
+    expect(screen.getByRole("link", { name: /contact/i })).toBeInTheDocument();
   });
 
   it("renders the Get API key CTA button", () => {
@@ -42,13 +57,18 @@ describe("<Navbar />", () => {
     expect(btn || document.querySelector('[aria-hidden="true"]')).toBeTruthy();
   });
 
-  it("Features link points to #features", () => {
+  it("Features link points to /features", () => {
     render(<Navbar />);
-    expect(screen.getByRole("link", { name: /features/i })).toHaveAttribute("href", "#features");
+    expect(screen.getByRole("link", { name: /features/i })).toHaveAttribute("href", "/features");
   });
 
-  it("Pricing link points to #pricing", () => {
+  it("Pricing link points to /pricing", () => {
     render(<Navbar />);
-    expect(screen.getByRole("link", { name: /pricing/i })).toHaveAttribute("href", "#pricing");
+    expect(screen.getByRole("link", { name: /pricing/i })).toHaveAttribute("href", "/pricing");
+  });
+
+  it("Docs link points to /docs", () => {
+    render(<Navbar />);
+    expect(screen.getByRole("link", { name: /^docs$/i })).toHaveAttribute("href", "/docs");
   });
 });
