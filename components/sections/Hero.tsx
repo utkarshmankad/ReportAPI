@@ -51,10 +51,10 @@ function CodePanel({
 
   return (
     <div className="flex-1 min-w-0 flex flex-col">
-      <span className="mb-2 text-xs font-medium tracking-widest uppercase text-[--color-text-secondary]">
+      <span className="mb-2 text-accent text-xs font-mono tracking-widest uppercase">
         {label}
       </span>
-      <div className="flex-1 bg-[--color-surface] border border-[--color-border] rounded-[--radius-lg] p-5 overflow-x-auto">
+      <div className="flex-1 bg-surface border border-border rounded-[--radius-lg] p-5 overflow-x-auto shadow-lg">
         <pre className="text-sm font-mono leading-relaxed">
           <code>
             {lines.map((line, i) => (
@@ -68,8 +68,6 @@ function CodePanel({
 }
 
 function CodeLine({ line }: { line: string }) {
-  // Colour JSON keys and string values without a library.
-  // Matches: "key": → accent, : "value" / : true/false/number → green-400
   const keyPattern = /^(\s*)("[\w_]+")(:\s*)/;
   const valuePattern = /^(:\s*)(".*?"|[\d.]+|true|false|null)(,?)(\s*)$/;
 
@@ -80,16 +78,18 @@ function CodeLine({ line }: { line: string }) {
 
     return (
       <span className="block">
-        <span className="text-[--color-text-secondary]">{keyMatch[1]}</span>
-        <span className="text-[--color-accent]">{keyMatch[2]}</span>
-        <span className="text-[--color-text-secondary]">{keyMatch[3]}</span>
+        <span className="text-text-secondary">{keyMatch[1]}</span>
+        <span className="text-accent">{keyMatch[2]}</span>
+        <span className="text-text-secondary">{keyMatch[3]}</span>
         {valMatch ? (
           <>
-            <span className="text-green-400">{valMatch[2]}</span>
-            <span className="text-[--color-text-secondary]">{valMatch[3]}</span>
+            <span className={valMatch[2].startsWith('"') ? "text-success" : "text-warning"}>
+              {valMatch[2]}
+            </span>
+            <span className="text-text-secondary">{valMatch[3]}</span>
           </>
         ) : (
-          <span className="text-[--color-text-secondary]">{afterKey}</span>
+          <span className="text-text-secondary">{afterKey}</span>
         )}
       </span>
     );
@@ -100,8 +100,8 @@ function CodeLine({ line }: { line: string }) {
     const [verb, ...rest] = line.split(" ");
     return (
       <span className="block">
-        <span className="text-[--color-accent]">{verb}</span>
-        <span className="text-[--color-text-primary]">{" " + rest.join(" ")}</span>
+        <span className="text-accent">{verb}</span>
+        <span className="text-text-primary">{" " + rest.join(" ")}</span>
       </span>
     );
   }
@@ -111,15 +111,15 @@ function CodeLine({ line }: { line: string }) {
   if (headerMatch && !line.startsWith("{") && !line.startsWith("}")) {
     return (
       <span className="block">
-        <span className="text-[--color-text-secondary]">{headerMatch[1]}</span>
-        <span className="text-[--color-text-secondary]">{headerMatch[2]}</span>
-        <span className="text-green-400">{headerMatch[3]}</span>
+        <span className="text-text-secondary">{headerMatch[1]}</span>
+        <span className="text-text-secondary">{headerMatch[2]}</span>
+        <span className="text-success">{headerMatch[3]}</span>
       </span>
     );
   }
 
   return (
-    <span className="block text-[--color-text-secondary]">{line || " "}</span>
+    <span className="block text-text-secondary">{line || " "}</span>
   );
 }
 
@@ -130,7 +130,7 @@ export function Hero() {
     <section
       ref={ref}
       className={cn(
-        "min-h-screen flex items-center pt-24 transition-all duration-500",
+        "min-h-screen flex items-center pt-24 bg-bg transition-all duration-500",
         isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}
     >
@@ -139,13 +139,13 @@ export function Hero() {
         <div className="flex flex-col items-center text-center gap-6">
           <Badge variant="success">Now in public beta</Badge>
 
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[--color-text-primary] max-w-3xl">
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-text-primary max-w-3xl">
             Turn raw data into{" "}
-            <span className="text-[--color-accent]">executive reports</span>
+            <span className="text-accent">executive reports</span>
             {" "}in seconds
           </h1>
 
-          <p className="text-lg md:text-xl text-[--color-text-secondary] max-w-xl">
+          <p className="text-lg md:text-xl text-text-secondary max-w-xl">
             Send a JSON or CSV payload. Get back board-ready narrative. No BI analyst required.
           </p>
 
@@ -161,13 +161,13 @@ export function Hero() {
               {avatars.map(({ initials, bg }, i) => (
                 <div
                   key={initials}
-                  className={`w-7 h-7 rounded-full ${bg} flex items-center justify-center text-white text-xs font-medium border-2 border-[--color-bg] ${i !== 0 ? "-ml-2" : ""}`}
+                  className={`w-7 h-7 rounded-full ${bg} flex items-center justify-center text-white text-xs font-medium border-2 border-bg ${i !== 0 ? "-ml-2" : ""}`}
                 >
                   {initials}
                 </div>
               ))}
             </div>
-            <span className="text-sm text-[--color-text-secondary]">
+            <span className="text-sm text-text-tertiary">
               Trusted by 120+ companies across India
             </span>
           </div>
@@ -175,8 +175,8 @@ export function Hero() {
 
         {/* Code block preview */}
         <div className="mt-16 flex flex-col md:flex-row gap-4 w-full">
-          <CodePanel label="Request" code={requestCode} />
-          <CodePanel label="Response" code={responseCode} />
+          <CodePanel label="REQUEST" code={requestCode} />
+          <CodePanel label="RESPONSE" code={responseCode} />
         </div>
       </div>
     </section>

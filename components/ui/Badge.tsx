@@ -9,9 +9,9 @@ export function Badge({ children, variant }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center px-2 py-0.5 rounded-[--radius-sm] text-xs font-medium uppercase tracking-wide",
-        variant === "default" && "bg-[--color-border] text-[--color-text-secondary]",
-        variant === "success" && "bg-green-900/30 text-[--color-success]"
+        "inline-flex items-center px-2.5 py-0.5 rounded-[--radius-sm] text-xs font-medium uppercase tracking-wider",
+        variant === "default" && "bg-surface-raised border border-border text-text-secondary",
+        variant === "success" && "bg-success-subtle border border-success/20 text-success"
       )}
     >
       {children}

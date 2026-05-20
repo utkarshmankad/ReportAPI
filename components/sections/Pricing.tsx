@@ -71,7 +71,7 @@ export function Pricing() {
       id="pricing"
       ref={ref}
       className={cn(
-        "py-24 transition-all duration-500",
+        "py-24 bg-surface transition-all duration-500",
         isInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}
     >
@@ -79,22 +79,26 @@ export function Pricing() {
         {/* Header */}
         <div className="flex flex-col items-center text-center gap-4 mb-12">
           <Badge variant="default">Pricing</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-[--color-text-primary]">
+          <h2 className="text-3xl md:text-4xl font-bold text-text-primary">
             Pay for what you use
           </h2>
-          <p className="text-[--color-text-secondary]">
+          <p className="text-text-secondary">
             Hard quota caps. No overages. Cancel anytime.
           </p>
 
           {/* Toggle */}
-          <div role="group" aria-label="Billing period" className="mt-2 flex items-center gap-1 bg-[--color-surface] border border-[--color-border] rounded-[--radius-md] p-1">
+          <div
+            role="group"
+            aria-label="Billing period"
+            className="mt-2 flex items-center gap-1 bg-surface-raised border border-border rounded-[--radius-md] p-1"
+          >
             <button
               onClick={() => setAnnual(false)}
               className={cn(
                 "px-4 py-1.5 text-sm rounded-[--radius-sm] font-medium transition-colors",
                 !annual
-                  ? "bg-[--color-accent] text-white"
-                  : "text-[--color-text-secondary] hover:text-[--color-text-primary]"
+                  ? "bg-accent text-white"
+                  : "text-text-secondary hover:text-text-primary"
               )}
             >
               Monthly
@@ -104,12 +108,12 @@ export function Pricing() {
               className={cn(
                 "px-4 py-1.5 text-sm rounded-[--radius-sm] font-medium transition-colors",
                 annual
-                  ? "bg-[--color-accent] text-white"
-                  : "text-[--color-text-secondary] hover:text-[--color-text-primary]"
+                  ? "bg-accent text-white"
+                  : "text-text-secondary hover:text-text-primary"
               )}
             >
               Annual{" "}
-              <span className={cn("text-xs", annual ? "text-white/80" : "text-[--color-text-secondary]")}>
+              <span className={cn("text-xs", annual ? "text-white/80" : "text-text-secondary")}>
                 (save 20%)
               </span>
             </button>
@@ -122,19 +126,19 @@ export function Pricing() {
             <div
               key={plan.name}
               className={cn(
-                "rounded-[--radius-lg] p-8 flex flex-col gap-6",
+                "bg-bg border rounded-[--radius-xl] p-8 flex flex-col gap-6 shadow-sm",
                 plan.featured
-                  ? "bg-[--color-surface] border-2 border-[--color-accent]"
-                  : "bg-[--color-surface] border border-[--color-border]"
+                  ? "border-2 border-accent shadow-lg ring-1 ring-accent/20"
+                  : "border-border hover:border-accent/40 transition-colors"
               )}
             >
               {/* Card header */}
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-[--color-text-primary]">
+                <span className="font-semibold text-text-primary">
                   {plan.name}
                 </span>
                 {plan.featured && (
-                  <span className="text-xs font-medium px-2 py-0.5 rounded-[--radius-sm] bg-[--color-accent]/10 text-[--color-accent]">
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full bg-accent-subtle text-accent-text">
                     Most popular
                   </span>
                 )}
@@ -142,17 +146,17 @@ export function Pricing() {
 
               {/* Price */}
               <div className="flex items-end gap-1">
-                <span className="text-4xl font-bold text-[--color-text-primary]">
+                <span className="text-4xl font-bold text-text-primary">
                   ${resolvePrice(plan.monthlyPrice, annual).toLocaleString()}
                 </span>
-                <span className="text-[--color-text-secondary] text-sm mb-1">/mo</span>
+                <span className="text-text-secondary text-sm mb-1">/mo</span>
               </div>
 
               {/* Feature list */}
               <ul className="flex flex-col gap-2.5">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-[--color-text-secondary]">
-                    <span className="text-[--color-success] shrink-0 mt-px">✓</span>
+                  <li key={feature} className="flex items-start gap-2 text-sm text-text-secondary">
+                    <span className="text-success shrink-0 mt-px">✓</span>
                     {feature}
                   </li>
                 ))}

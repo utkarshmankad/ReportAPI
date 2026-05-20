@@ -12,28 +12,19 @@ const sizeClasses: Record<ButtonProps["size"], string> = {
   lg: "px-6 py-3 text-base",
 };
 
-export function Button({
-  variant,
-  size,
-  children,
-  className,
-  ...props
-}: ButtonProps) {
+export function Button({ variant, size, children, className, ...props }: ButtonProps) {
   return (
     <button
       type="button"
       className={cn(
-        "inline-flex items-center justify-center font-medium rounded-[--radius-md] transition-colors cursor-pointer",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[--color-accent] focus-visible:ring-offset-2 focus-visible:ring-offset-[--color-bg]",
+        "inline-flex items-center justify-center font-medium rounded-[--radius-md] transition-all duration-150 cursor-pointer",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
         "disabled:pointer-events-none disabled:opacity-50",
         sizeClasses[size],
-        variant === "primary" && [
-          "bg-[--color-accent] text-white",
-          "hover:bg-[--color-accent-hover]",
-        ],
+        variant === "primary" && ["bg-accent text-white", "hover:bg-accent-hover"],
         variant === "ghost" && [
-          "bg-transparent border border-[--color-border] text-[--color-text-secondary]",
-          "hover:text-[--color-text-primary] hover:border-[--color-text-secondary]",
+          "bg-transparent border border-border text-text-secondary",
+          "hover:text-text-primary hover:bg-surface-raised hover:border-border",
         ],
         className
       )}
