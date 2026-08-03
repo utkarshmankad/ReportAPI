@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { InlineCode } from "@/components/ui/InlineCode";
 
@@ -59,18 +60,21 @@ const quickStartCards = [
     title: "Quickstart",
     description: "Make your first API call in under 5 minutes.",
     cta: "Read guide →",
+    href: "#your-first-report",
   },
   {
     icon: "📋",
     title: "API Reference",
-    description: "Full endpoint documentation with request/response schemas.",
+    description: "Interactive reference for the endpoints that are live today — try requests right from the browser.",
     cta: "View reference →",
+    href: "/docs/api-reference",
   },
   {
     icon: "📦",
     title: "SDKs & Libraries",
-    description: "Official Python and Node.js SDKs with usage examples.",
-    cta: "Browse SDKs →",
+    description: "Code snippets for calling the API directly — official SDKs are on the roadmap.",
+    cta: "Browse snippets →",
+    href: "#your-first-report",
   },
 ];
 
@@ -177,8 +181,9 @@ export default function DocsPage() {
       <section className="pb-16 px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {quickStartCards.map((card) => (
-            <div
+            <Link
               key={card.title}
+              href={card.href}
               className="bg-surface border border-border rounded-[--radius-lg] p-6 shadow-sm hover:border-accent/40 transition-colors duration-200 cursor-pointer flex flex-col gap-4"
             >
               <div className="w-10 h-10 flex items-center justify-center bg-accent-subtle rounded-[--radius-sm] text-xl">
@@ -189,7 +194,7 @@ export default function DocsPage() {
                 <p className="text-sm text-text-secondary">{card.description}</p>
               </div>
               <span className="text-accent text-sm mt-auto">{card.cta}</span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

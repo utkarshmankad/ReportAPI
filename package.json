@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ai-sdk/groq": "^4.0.19",
+    "@scalar/api-reference-react": "^0.9.60",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.0",
     "ai": "^7.0.48",
