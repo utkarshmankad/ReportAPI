@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getSiteUrl } from '@/lib/site-url';
 
 export async function POST(request: Request) {
   const { email } = await request.json();
@@ -9,10 +10,9 @@ export async function POST(request: Request) {
   }
 
   const supabase = await createClient();
-  const origin = request.headers.get('origin') ?? new URL(request.url).origin;
 
   await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/reset-password`,
+    redirectTo: `${getSiteUrl()}/reset-password`,
   });
 
   // Always return success — do not reveal whether the email exists.
