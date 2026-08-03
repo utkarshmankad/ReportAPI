@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe, PRICE_IDS } from '@/lib/stripe/server';
 import { createClient } from '@/lib/supabase/server';
+import { getSiteUrl } from '@/lib/site-url';
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
   }
 
   const priceId = annual ? PRICE_IDS[plan].annual : PRICE_IDS[plan].monthly;
-  const origin = request.headers.get('origin') ?? new URL(request.url).origin;
+  const origin = getSiteUrl();
 
   const session = await stripe.checkout.sessions.create({
     mode: 'subscription',
