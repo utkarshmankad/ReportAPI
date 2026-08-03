@@ -5,6 +5,9 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
   plan text not null default 'starter' check (plan in ('starter', 'growth', 'enterprise')),
+  stripe_customer_id text unique,
+  stripe_subscription_id text,
+  subscription_status text,
   created_at timestamptz not null default now()
 );
 
@@ -38,6 +41,8 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
 create table if not exists public.api_keys (
   id uuid primary key default gen_random_uuid(),

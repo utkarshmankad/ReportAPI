@@ -1,8 +1,26 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Pricing } from "@/components/sections/Pricing";
 
 describe("<Pricing />", () => {
+  const originalLocation = window.location;
+  const originalFetch = global.fetch;
+
+  beforeEach(() => {
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: { ...originalLocation, href: "" },
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: originalLocation,
+    });
+    global.fetch = originalFetch;
+    jest.restoreAllMocks();
+  });
   it("renders section heading", () => {
     render(<Pricing />);
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
@@ -67,5 +85,41 @@ describe("<Pricing />", () => {
   it("renders Pricing badge", () => {
     render(<Pricing />);
     expect(screen.getByText(/pricing/i)).toBeInTheDocument();
+  });
+
+  it("redirects Enterprise CTA to /contact without calling checkout", async () => {
+    global.fetch = jest.fn();
+    render(<Pricing />);
+    await userEvent.click(screen.getByRole("button", { name: /talk to us/i }));
+    expect(global.fetch).not.toHaveBeenCalled();
+    expect(window.location.href).toBe("/contact");
+  });
+
+  it("redirects to /login when checkout returns 401", async () => {
+    global.fetch = jest.fn().mockResolvedValue({ status: 401, json: async () => ({}) });
+    render(<Pricing />);
+    const [starterCta] = screen.getAllByRole("button", { name: /get started/i });
+    await userEvent.click(starterCta);
+    await waitFor(() => expect(window.location.href).toBe("/login"));
+  });
+
+  it("redirects to Stripe checkout URL on success", async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      status: 200,
+      json: async () => ({ url: "https://checkout.stripe.com/session123" }),
+    });
+    render(<Pricing />);
+    const [starterCta] = screen.getAllByRole("button", { name: /get started/i });
+    await userEvent.click(starterCta);
+    await waitFor(() =>
+      expect(window.location.href).toBe("https://checkout.stripe.com/session123")
+    );
+    expect(global.fetch).toHaveBeenCalledWith(
+      "/api/checkout",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ plan: "starter", annual: false }),
+      })
+    );
   });
 });
