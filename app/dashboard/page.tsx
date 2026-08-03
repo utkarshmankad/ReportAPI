@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PLAN_QUOTAS } from "@/lib/plan-quotas";
 import { ApiKeyManager } from "@/components/dashboard/ApiKeyManager";
+
+export const metadata: Metadata = {
+  title: "Dashboard — ReportAPI",
+  robots: { index: false, follow: false },
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();
