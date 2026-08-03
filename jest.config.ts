@@ -18,6 +18,7 @@ const config: Config = {
     "!lib/supabase/**",
     "!lib/stripe/**",
     "!lib/plan-quotas.ts",
+    "!lib/resend.ts",
     "!**/*.d.ts",
     "!**/index.ts",
   ],

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 export const metadata: Metadata = {
   title: "Changelog — ReportAPI",
@@ -95,14 +96,7 @@ export default function ChangelogPage() {
           </p>
 
           {/* Subscribe */}
-          <div className="flex gap-3 max-w-sm mx-auto mt-6 w-full">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 bg-surface border border-border rounded-[--radius-md] px-4 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-[border-color,box-shadow] duration-150"
-            />
-            <Button variant="primary" size="md">Subscribe</Button>
-          </div>
+          <NewsletterForm />
         </div>
       </section>
 
