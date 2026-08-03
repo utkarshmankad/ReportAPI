@@ -43,8 +43,7 @@ export function Demo() {
     setOutputError("");
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${baseUrl}/v1/report/generate`, {
+      const res = await fetch(`/api/report/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: inputText }),
