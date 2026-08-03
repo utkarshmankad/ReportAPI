@@ -9,7 +9,34 @@ import { plans, resolvePrice } from "@/lib/pricing-data";
 
 export function Pricing() {
   const [annual, setAnnual] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const { ref, isInView } = useInView();
+
+  async function handleCheckout(planName: string) {
+    if (planName === "Enterprise") {
+      window.location.href = "/contact";
+      return;
+    }
+
+    setLoadingPlan(planName);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: planName.toLowerCase(), annual }),
+      });
+
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const json = await res.json();
+      if (json.url) window.location.href = json.url;
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
 
   return (
     <section
@@ -112,8 +139,10 @@ export function Pricing() {
                 variant={plan.featured ? "primary" : "ghost"}
                 size="md"
                 className="w-full mt-auto justify-center"
+                disabled={loadingPlan === plan.name}
+                onClick={() => handleCheckout(plan.name)}
               >
-                {plan.cta}
+                {loadingPlan === plan.name ? "Redirecting…" : plan.cta}
               </Button>
             </div>
           ))}
