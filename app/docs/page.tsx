@@ -2,6 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { InlineCode } from "@/components/ui/InlineCode";
+import { DocsSearch } from "@/components/docs/DocsSearch";
+
+// Search only indexes sections that actually exist on this page (plus the
+// interactive API reference) — the sidebar nav below also lists roadmap
+// sections that don't have a real destination yet, so those are excluded
+// here to avoid search results that jump nowhere.
+const searchEntries = [
+  { label: "Introduction", href: "#introduction", heading: "Getting Started" },
+  { label: "Authentication", href: "#authentication", heading: "Getting Started" },
+  { label: "API keys", href: "#api-keys", heading: "Getting Started" },
+  { label: "Your first report", href: "#your-first-report", heading: "Getting Started" },
+  { label: "Error handling", href: "#error-handling", heading: "Getting Started" },
+  { label: "Interactive API Reference", href: "/docs/api-reference", heading: "API Reference" },
+];
 
 export const metadata: Metadata = {
   title: "Documentation — ReportAPI",
@@ -163,17 +177,7 @@ export default function DocsPage() {
           </p>
 
           {/* Search */}
-          <div className="relative w-full max-w-xl">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-tertiary pointer-events-none select-none">
-              🔍
-            </span>
-            <input
-              type="search"
-              placeholder="Search docs..."
-
-              className="w-full bg-surface border border-border rounded-[--radius-md] px-4 py-3 pl-11 text-text-primary placeholder:text-text-tertiary outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-[border-color,box-shadow] duration-150"
-            />
-          </div>
+          <DocsSearch entries={searchEntries} />
         </div>
       </section>
 
