@@ -17,6 +17,7 @@ const config: Config = {
     "lib/**/*.{ts,tsx}",
     "!lib/supabase/**",
     "!lib/stripe/**",
+    "!lib/plan-quotas.ts",
     "!**/*.d.ts",
     "!**/index.ts",
   ],
