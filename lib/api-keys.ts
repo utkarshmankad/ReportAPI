@@ -7,3 +7,7 @@ export function generateApiKey(): { rawKey: string; prefix: string; hash: string
   const hash = createHash('sha256').update(rawKey).digest('hex');
   return { rawKey, prefix, hash };
 }
+
+export function hashApiKey(rawKey: string): string {
+  return createHash('sha256').update(rawKey).digest('hex');
+}

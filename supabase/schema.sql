@@ -151,8 +151,10 @@ create policy "usage_counters_select_own"
 
 -- Reserves a report slot atomically: increments the caller's monthly counter
 -- and only inserts the pending report row if still under quota. SECURITY
--- DEFINER (bypasses RLS to write usage_counters) but explicitly checks the
--- caller's own auth.uid() to prevent reserving slots against another user.
+-- DEFINER (bypasses RLS to write usage_counters). Ownership is only checked
+-- for session-authenticated callers — service-role calls (the API-key auth
+-- path, after we've already validated the key server-side) have no
+-- auth.uid() and are trusted by construction.
 create or replace function public.reserve_report_slot(p_user_id uuid, p_quota int, p_input_summary text)
 returns uuid
 language plpgsql
@@ -164,7 +166,7 @@ declare
   new_id uuid;
   this_month date := date_trunc('month', now())::date;
 begin
-  if p_user_id != auth.uid() then
+  if auth.role() = 'authenticated' and p_user_id != auth.uid() then
     raise exception 'p_user_id must match the authenticated caller';
   end if;
 
