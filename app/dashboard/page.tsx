@@ -22,15 +22,14 @@ export default async function DashboardPage() {
   const plan = profile?.plan ?? "starter";
   const quota = PLAN_QUOTAS[plan];
 
-  const startOfMonth = new Date();
-  startOfMonth.setUTCDate(1);
-  startOfMonth.setUTCHours(0, 0, 0, 0);
+  const thisMonth = new Date().toISOString().slice(0, 8) + "01";
 
-  const { count: reportsThisMonth } = await supabase
-    .from("reports")
-    .select("id", { count: "exact", head: true })
+  const { data: usageCounter } = await supabase
+    .from("usage_counters")
+    .select("count")
     .eq("user_id", user.id)
-    .gte("created_at", startOfMonth.toISOString());
+    .eq("month", thisMonth)
+    .single();
 
   const { data: recentReports } = await supabase
     .from("reports")
@@ -45,7 +44,7 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  const usageCount = reportsThisMonth ?? 0;
+  const usageCount = usageCounter?.count ?? 0;
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-24 flex flex-col gap-12">
