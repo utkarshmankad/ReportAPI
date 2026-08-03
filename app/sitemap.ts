@@ -10,6 +10,9 @@ const publicRoutes = [
   "/docs/api-reference",
   "/features",
   "/pricing",
+  "/privacy-policy",
+  "/terms-of-service",
+  "/dpdp-compliance",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
