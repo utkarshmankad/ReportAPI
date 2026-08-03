@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useInView(): {
-  ref: React.RefObject<HTMLElement>;
+export function useInView<T extends HTMLElement = HTMLElement>(): {
+  ref: React.RefObject<T>;
   isInView: boolean;
 } {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<T>(null);
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {

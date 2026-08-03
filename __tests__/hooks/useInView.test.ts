@@ -1,67 +1,82 @@
-import { renderHook, act } from '@testing-library/react'
-import { useInView } from '@/hooks/useInView'
+import { renderHook, render, screen, act } from "@testing-library/react";
+import React from "react";
+import { useInView } from "@/hooks/useInView";
 
-const mockObserve = jest.fn()
-const mockUnobserve = jest.fn()
-const mockDisconnect = jest.fn()
+function TestComponent() {
+  const { ref, isInView } = useInView();
+  return React.createElement("div", { ref }, isInView ? "visible" : "hidden");
+}
 
-let intersectionCallback: IntersectionObserverCallback
+describe("useInView()", () => {
+  it("returns isInView=false initially when no DOM element is attached", () => {
+    const { result } = renderHook(() => useInView());
+    expect(result.current.isInView).toBe(false);
+  });
 
-beforeEach(() => {
-  jest.clearAllMocks()
-  window.IntersectionObserver = jest.fn((cb) => {
-    intersectionCallback = cb
-    return {
-      observe: mockObserve,
-      unobserve: mockUnobserve,
-      disconnect: mockDisconnect,
-    }
-  }) as unknown as typeof IntersectionObserver
-})
+  it("returns a ref object", () => {
+    const { result } = renderHook(() => useInView());
+    expect(result.current.ref).toBeDefined();
+    expect(typeof result.current.ref).toBe("object");
+  });
 
-describe('useInView()', () => {
-  it('returns isInView=false initially', () => {
-    const { result } = renderHook(() => useInView())
-    expect(result.current.isInView).toBe(false)
-  })
+  it("sets isInView to true when the element intersects", () => {
+    render(React.createElement(TestComponent));
+    expect(screen.getByText("visible")).toBeInTheDocument();
+  });
 
-  it('returns a ref object', () => {
-    const { result } = renderHook(() => useInView())
-    expect(result.current.ref).toBeDefined()
-    expect(typeof result.current.ref).toBe('object')
-  })
+  it("creates an IntersectionObserver", () => {
+    render(React.createElement(TestComponent));
+    expect(global.IntersectionObserver).toHaveBeenCalled();
+  });
 
-  it('sets isInView=true when intersection fires', () => {
-    const { result } = renderHook(() => useInView())
-    act(() => {
-      intersectionCallback(
-        [{ isIntersecting: true } as IntersectionObserverEntry],
-        {} as IntersectionObserver
-      )
-    })
-    expect(result.current.isInView).toBe(true)
-  })
+  it("disconnects observer when isInView becomes true", () => {
+    const disconnectMock = jest.fn();
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce((callback) => ({
+      observe: jest.fn().mockImplementation((target) => {
+        if (target) {
+          callback(
+            [{ isIntersecting: true, target } as IntersectionObserverEntry],
+            null as unknown as IntersectionObserver
+          );
+        }
+      }),
+      disconnect: disconnectMock,
+      unobserve: jest.fn(),
+    }));
 
-  it('does not revert to false after becoming true (triggerOnce)', () => {
-    const { result } = renderHook(() => useInView())
-    act(() => {
-      intersectionCallback(
-        [{ isIntersecting: true } as IntersectionObserverEntry],
-        {} as IntersectionObserver
-      )
-    })
-    act(() => {
-      intersectionCallback(
-        [{ isIntersecting: false } as IntersectionObserverEntry],
-        {} as IntersectionObserver
-      )
-    })
-    expect(result.current.isInView).toBe(true)
-  })
+    render(React.createElement(TestComponent));
+    expect(disconnectMock).toHaveBeenCalled();
+  });
 
-  it('calls disconnect on unmount', () => {
-    const { unmount } = renderHook(() => useInView())
-    unmount()
-    expect(mockDisconnect).toHaveBeenCalledTimes(1)
-  })
-})
+  it("disconnects observer on unmount", () => {
+    const disconnectMock = jest.fn();
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce((callback) => ({
+      observe: jest.fn().mockImplementation((target) => {
+        if (target) {
+          callback(
+            [{ isIntersecting: true, target } as IntersectionObserverEntry],
+            null as unknown as IntersectionObserver
+          );
+        }
+      }),
+      disconnect: disconnectMock,
+      unobserve: jest.fn(),
+    }));
+
+    const { unmount } = render(React.createElement(TestComponent));
+    unmount();
+    expect(disconnectMock).toHaveBeenCalled();
+  });
+
+  it("does not call observe when ref is not attached to a DOM node", () => {
+    const observeMock = jest.fn();
+    (global.IntersectionObserver as jest.Mock).mockImplementationOnce((callback) => ({
+      observe: observeMock,
+      disconnect: jest.fn(),
+      unobserve: jest.fn(),
+    }));
+
+    renderHook(() => useInView());
+    expect(observeMock).not.toHaveBeenCalled();
+  });
+});

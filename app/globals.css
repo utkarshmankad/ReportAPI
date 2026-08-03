@@ -2,20 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* ── Surfaces ── */
+  --color-bg:              #FFFFFF;
+  --color-surface:         #F5F5F7;
+  --color-surface-raised:  #EBEBEF;
+  --color-border:          #D8D8E0;
+
+  /* ── Text ── */
+  --color-text-primary:    #0D0D12;
+  --color-text-secondary:  #52526B;
+  --color-text-tertiary:   #8888A0;
+
+  /* ── Accent — indigo/violet, WCAG AA on both backgrounds ── */
+  --color-accent:          #4F46E5;
+  --color-accent-hover:    #4338CA;
+  --color-accent-subtle:   #EEF2FF;
+  --color-accent-text:     #3730A3;
+
+  /* ── Semantic ── */
+  --color-success:         #16A34A;
+  --color-success-subtle:  #F0FDF4;
+  --color-error:           #DC2626;
+  --color-warning:         #D97706;
+
+  /* ── Avatar — three themed colours for social-proof stacks ── */
+  --color-avatar-a: #4F46E5;
+  --color-avatar-b: #7C3AED;
+  --color-avatar-c: #0369A1;
+
+  /* ── Radius ── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+
+  /* ── Shadow ── */
+  --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --shadow-md:  0 4px 12px 0 rgb(0 0 0 / 0.08), 0 2px 6px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg:  0 10px 32px 0 rgb(0 0 0 / 0.10), 0 4px 12px -4px rgb(0 0 0 / 0.06);
+}
+
+.dark {
+  /* ── Surfaces ── */
+  --color-bg:              #09090E;
+  --color-surface:         #111118;
+  --color-surface-raised:  #1A1A24;
+  --color-border:          #232333;
+
+  /* ── Text ── */
+  --color-text-primary:    #EEEEF5;
+  --color-text-secondary:  #9494AD;
+  --color-text-tertiary:   #5C5C75;
+
+  /* ── Accent — brighter in dark mode for contrast ── */
+  --color-accent:          #6366F1;
+  --color-accent-hover:    #818CF8;
+  --color-accent-subtle:   #1E1B4B;
+  --color-accent-text:     #A5B4FC;
+
+  /* ── Semantic ── */
+  --color-success:         #22C55E;
+  --color-success-subtle:  #052E16;
+  --color-error:           #F87171;
+  --color-warning:         #FCD34D;
+
+  /* ── Avatar ── */
+  --color-avatar-a: #6366F1;
+  --color-avatar-b: #8B5CF6;
+  --color-avatar-c: #0EA5E9;
+
+  /* ── Shadow — stronger in dark to separate surfaces ── */
+  --shadow-sm:  0 1px 3px 0 rgb(0 0 0 / 0.30);
+  --shadow-md:  0 4px 12px 0 rgb(0 0 0 / 0.40);
+  --shadow-lg:  0 10px 32px 0 rgb(0 0 0 / 0.50);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-:root {
-  --color-bg: #0A0A0F;
-  --color-surface: #13131A;
-  --color-border: #1E1E2E;
-  --color-text-primary: #F0F0F5;
-  --color-text-secondary: #8B8B9E;
-  --color-accent: #6B5FF8;
-  --color-accent-hover: #7C6FFF;
-  --color-success: #22C55E;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }

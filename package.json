@@ -11,11 +11,15 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --ci --forceExit",
+    "test:scripts": "bash scripts/start.test.sh",
     "dev:start": "bash scripts/start-dev.sh"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.0",
     "clsx": "^2.1.1",
     "next": "14.2.35",
+    "next-themes": "^0.4.6",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^3.6.0"
