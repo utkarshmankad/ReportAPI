@@ -8,6 +8,9 @@ export function useInView<T extends HTMLElement = HTMLElement>(): {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    // Guard for environments without IntersectionObserver (SSR, jsdom without mock)
+    if (typeof IntersectionObserver === "undefined") return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -20,6 +23,7 @@ export function useInView<T extends HTMLElement = HTMLElement>(): {
 
     const el = ref.current;
     if (el) observer.observe(el);
+
     return () => observer.disconnect();
   }, []);
 

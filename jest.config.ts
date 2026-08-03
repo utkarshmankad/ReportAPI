@@ -15,6 +15,7 @@ const config: Config = {
     "components/**/*.{ts,tsx}",
     "hooks/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
+    "!lib/supabase/**",
     "!**/*.d.ts",
     "!**/index.ts",
   ],
