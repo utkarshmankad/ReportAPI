@@ -92,3 +92,14 @@ create policy "reports_insert_own"
   on public.reports for insert
   to authenticated
   with check ( (select auth.uid()) = user_id );
+
+-- Per-IP daily counter for the unauthenticated demo endpoint. No policies:
+-- only the service-role key (used server-side) can read/write this table.
+create table if not exists public.demo_usage (
+  ip_hash text not null,
+  day date not null,
+  count int not null default 1,
+  primary key (ip_hash, day)
+);
+
+alter table public.demo_usage enable row level security;
