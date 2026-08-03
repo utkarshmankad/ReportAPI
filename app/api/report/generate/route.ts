@@ -4,10 +4,28 @@ import { generateText } from 'ai';
 import { groq } from '@ai-sdk/groq';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { hashApiKey } from '@/lib/api-keys';
 import { PLAN_QUOTAS } from '@/lib/plan-quotas';
 
 const MAX_INPUT_LENGTH = 20_000;
 const ANON_DAILY_LIMIT = 5;
+
+async function resolveApiKeyUser(authHeader: string | null) {
+  if (!authHeader?.startsWith('Bearer ')) return { checked: false } as const;
+
+  const rawKey = authHeader.slice('Bearer '.length).trim();
+  const admin = createAdminClient();
+  const { data: key } = await admin
+    .from('api_keys')
+    .select('user_id, revoked_at')
+    .eq('key_hash', hashApiKey(rawKey))
+    .single();
+
+  if (!key) return { checked: true, error: 'missing_api_key' as const };
+  if (key.revoked_at) return { checked: true, error: 'api_key_revoked' as const };
+
+  return { checked: true, userId: key.user_id as string };
+}
 
 export async function POST(request: Request) {
   const { data } = await request.json();
@@ -23,26 +41,45 @@ export async function POST(request: Request) {
     );
   }
 
+  const apiKeyResult = await resolveApiKeyUser(request.headers.get('authorization'));
+
+  if (apiKeyResult.checked && apiKeyResult.error === 'missing_api_key') {
+    return NextResponse.json({ error: 'Invalid API key.', code: 'missing_api_key' }, { status: 401 });
+  }
+  if (apiKeyResult.checked && apiKeyResult.error === 'api_key_revoked') {
+    return NextResponse.json({ error: 'This API key has been revoked.', code: 'api_key_revoked' }, { status: 403 });
+  }
+
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let userId: string | undefined;
+  let dbClient: ReturnType<typeof createAdminClient> | Awaited<ReturnType<typeof createClient>>;
+
+  if (apiKeyResult.checked && apiKeyResult.userId) {
+    userId = apiKeyResult.userId;
+    dbClient = createAdminClient();
+  } else {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    userId = user?.id;
+    dbClient = supabase;
+  }
 
   let reservedReportId: string | undefined;
 
-  if (user) {
-    const { data: profile } = await supabase.from('profiles').select('plan').eq('id', user.id).single();
+  if (userId) {
+    const { data: profile } = await dbClient.from('profiles').select('plan').eq('id', userId).single();
     const quota = PLAN_QUOTAS[profile?.plan ?? 'starter'];
 
-    const { data: reservedId } = await supabase.rpc('reserve_report_slot', {
-      p_user_id: user.id,
+    const { data: reservedId } = await dbClient.rpc('reserve_report_slot', {
+      p_user_id: userId,
       p_quota: quota,
       p_input_summary: data.slice(0, 500),
     });
 
     if (!reservedId) {
       return NextResponse.json(
-        { error: `Monthly quota of ${quota} reports reached. Upgrade your plan for more.` },
+        { error: `Monthly quota of ${quota} reports reached. Upgrade your plan for more.`, code: 'quota_exceeded' },
         { status: 429 }
       );
     }
@@ -79,13 +116,13 @@ export async function POST(request: Request) {
     });
   } catch {
     if (reservedReportId) {
-      await supabase.from('reports').update({ status: 'failed' }).eq('id', reservedReportId);
+      await dbClient.from('reports').update({ status: 'failed' }).eq('id', reservedReportId);
     }
     return NextResponse.json({ error: 'Report generation failed. Please try again.' }, { status: 502 });
   }
 
   if (reservedReportId) {
-    await supabase
+    await dbClient
       .from('reports')
       .update({ output: result.text, status: 'completed' })
       .eq('id', reservedReportId);

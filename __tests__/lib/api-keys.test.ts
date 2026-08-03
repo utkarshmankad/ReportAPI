@@ -1,4 +1,4 @@
-import { generateApiKey } from "@/lib/api-keys";
+import { generateApiKey, hashApiKey } from "@/lib/api-keys";
 import { createHash } from "crypto";
 
 describe("generateApiKey()", () => {
@@ -21,5 +21,16 @@ describe("generateApiKey()", () => {
     const a = generateApiKey();
     const b = generateApiKey();
     expect(a.rawKey).not.toBe(b.rawKey);
+  });
+});
+
+describe("hashApiKey()", () => {
+  it("matches the hash produced at generation time", () => {
+    const { rawKey, hash } = generateApiKey();
+    expect(hashApiKey(rawKey)).toBe(hash);
+  });
+
+  it("is deterministic", () => {
+    expect(hashApiKey("rpk_fixed_value")).toBe(hashApiKey("rpk_fixed_value"));
   });
 });
