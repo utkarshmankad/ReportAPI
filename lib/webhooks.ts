@@ -1,5 +1,6 @@
 import { createHmac, randomBytes } from 'crypto';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { assertSafeWebhookUrl } from '@/lib/ssrf-guard';
 
 export function generateWebhookSecret(): string {
   return `whsec_${randomBytes(24).toString('base64url')}`;
@@ -37,19 +38,23 @@ export async function deliverReportWebhooks(userId: string, event: WebhookEvent)
       let success = false;
 
       try {
-        const res = await fetch(endpoint.url, {
+        // Re-validated at delivery time, not just at registration, since DNS
+        // can be re-pointed to an internal address between the two (rebinding).
+        const safeUrl = await assertSafeWebhookUrl(endpoint.url);
+        const res = await fetch(safeUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-ReportAPI-Signature': signature,
           },
           body: payload,
+          redirect: 'manual',
           signal: AbortSignal.timeout(10_000),
         });
         statusCode = res.status;
         success = res.ok;
       } catch {
-        // network error / timeout — leave success false, statusCode null
+        // network error, timeout, or failed SSRF validation — leave success false
       }
 
       await admin.from('webhook_deliveries').insert({
