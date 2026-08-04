@@ -19,6 +19,7 @@ const config: Config = {
     "!lib/stripe/**",
     "!lib/plan-quotas.ts",
     "!lib/resend.ts",
+    "!lib/webhooks.ts",
     "!**/*.d.ts",
     "!**/index.ts",
   ],
