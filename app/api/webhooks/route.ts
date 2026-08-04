@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { generateWebhookSecret } from '@/lib/webhooks';
+import { assertSafeWebhookUrl } from '@/lib/ssrf-guard';
 
 export async function GET() {
   const supabase = await createClient();
@@ -30,12 +31,12 @@ export async function POST(request: Request) {
 
   let parsed: URL;
   try {
-    parsed = new URL(url);
-  } catch {
-    return NextResponse.json({ error: 'Invalid URL.' }, { status: 400 });
-  }
-  if (parsed.protocol !== 'https:') {
-    return NextResponse.json({ error: 'Webhook URL must use https.' }, { status: 400 });
+    parsed = await assertSafeWebhookUrl(url);
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : 'Invalid URL.' },
+      { status: 400 }
+    );
   }
 
   const supabase = await createClient();
