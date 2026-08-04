@@ -31,7 +31,9 @@ export async function POST(request: Request) {
 
   let parsed: URL;
   try {
-    parsed = await assertSafeWebhookUrl(url);
+    const target = await assertSafeWebhookUrl(url);
+    parsed = target.url;
+    target.dispatcher.close();
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : 'Invalid URL.' },
