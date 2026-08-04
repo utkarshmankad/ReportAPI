@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { hashApiKey } from '@/lib/api-keys';
 import { PLAN_QUOTAS } from '@/lib/plan-quotas';
+import { deliverReportWebhooks } from '@/lib/webhooks';
 
 const MAX_INPUT_LENGTH = 20_000;
 const ANON_DAILY_LIMIT = 5;
@@ -117,6 +118,15 @@ export async function POST(request: Request) {
   } catch {
     if (reservedReportId) {
       await dbClient.from('reports').update({ status: 'failed' }).eq('id', reservedReportId);
+
+      if (userId) {
+        await deliverReportWebhooks(userId, {
+          event: 'report.failed',
+          report_id: reservedReportId,
+          status: 'failed',
+          created_at: new Date().toISOString(),
+        });
+      }
     }
     return NextResponse.json({ error: 'Report generation failed. Please try again.' }, { status: 502 });
   }
@@ -126,6 +136,15 @@ export async function POST(request: Request) {
       .from('reports')
       .update({ output: result.text, status: 'completed' })
       .eq('id', reservedReportId);
+
+    if (userId) {
+      await deliverReportWebhooks(userId, {
+        event: 'report.completed',
+        report_id: reservedReportId,
+        status: 'completed',
+        created_at: new Date().toISOString(),
+      });
+    }
   }
 
   return NextResponse.json({

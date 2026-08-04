@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PLAN_QUOTAS } from "@/lib/plan-quotas";
 import { ApiKeyManager } from "@/components/dashboard/ApiKeyManager";
+import { WebhookManager } from "@/components/dashboard/WebhookManager";
 
 export const metadata: Metadata = {
   title: "Dashboard — ReportAPI",
@@ -50,6 +51,12 @@ export default async function DashboardPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
+  const { data: webhookEndpoints } = await supabase
+    .from("webhook_endpoints")
+    .select("id, url, active, created_at")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
   const usageCount = usageCounter?.count ?? 0;
 
   return (
@@ -80,6 +87,11 @@ export default async function DashboardPage() {
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">API keys</h2>
         <ApiKeyManager initialKeys={apiKeys ?? []} />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Webhooks</h2>
+        <WebhookManager initialEndpoints={webhookEndpoints ?? []} />
       </section>
 
       <section className="flex flex-col gap-3">
