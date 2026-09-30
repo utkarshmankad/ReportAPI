@@ -23,7 +23,7 @@ Updated 2026-10-01 IST. One bounded increment per run.
 
 ## Current sprint: controlled report request errors
 
-Branch: `fix/report-request-validation`. PR: linked from issue #15 and the pull request description after creation.
+Branch: `fix/report-request-validation`. Draft PR: [#19](https://github.com/utkarshmankad/ReportAPI/pull/19), targeting `develop`.
 
 - [x] Malformed or empty JSON returns JSON 400.
 - [x] Null, arrays, primitives and invalid/blank `data` return JSON 400.
@@ -31,9 +31,10 @@ Branch: `fix/report-request-validation`. PR: linked from issue #15 and the pull 
 - [x] Invalid input never touches auth, quota, model or webhook dependencies.
 - [x] 27 route tests retain anonymous/session/API-key flow, key rejection, quota exhaustion, persistence calls and model failure behavior.
 - [x] Baseline regression reproduction: 4 failures on original route; 27/27 after change.
-- [x] Full coverage suite: 198/198 tests across 19 suites, 97.78% lines and 90.52% branches (existing coverage scope).
+- [x] Full coverage suite: 198/198 tests across 19 suites, 98.17% lines and 90.28% branches (expanded coverage includes generation route). Route: 100% lines/statements/functions, 89.47% branches.
 - [x] Typecheck, lint and shell script tests (15/15).
-- [ ] Production build and GitHub CI, recorded in PR progress.
+- [x] Production build with explicit non-secret service placeholders; local production HTTP smoke: malformed/null 400, oversize 413.
+- [ ] GitHub CI; latest status and run links recorded in PR progress.
 - [ ] Full repository review rules verified; required reviews/CI satisfied.
 - [ ] Merge through develop then protected main.
 - [ ] Authorized release/deployment and live verification.
