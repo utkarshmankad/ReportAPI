@@ -29,7 +29,18 @@ async function resolveApiKeyUser(authHeader: string | null) {
 }
 
 export async function POST(request: Request) {
-  const { data } = await request.json();
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Request body must be valid JSON.' }, { status: 400 });
+  }
+
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+    return NextResponse.json({ error: 'Field "data" (CSV or JSON string) is required.' }, { status: 400 });
+  }
+
+  const { data } = body as { data?: unknown };
 
   if (typeof data !== 'string' || !data.trim()) {
     return NextResponse.json({ error: 'Field "data" (CSV or JSON string) is required.' }, { status: 400 });

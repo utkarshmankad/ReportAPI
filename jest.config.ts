@@ -12,6 +12,7 @@ const config: Config = {
   },
   collectCoverage: true,
   collectCoverageFrom: [
+    "app/api/report/generate/route.ts",
     "components/**/*.{ts,tsx}",
     "hooks/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
